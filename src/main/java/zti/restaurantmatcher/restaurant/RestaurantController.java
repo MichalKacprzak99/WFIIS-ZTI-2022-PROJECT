@@ -1,7 +1,12 @@
 package zti.restaurantmatcher.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.security.core.Authentication;
+import org.springframework.security.core.context.SecurityContextHolder;
+import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import zti.restaurantmatcher.user.User;
+import zti.restaurantmatcher.user.UserRepository;
 
 import java.util.Collection;
 import java.util.NoSuchElementException;
@@ -14,10 +19,20 @@ public class RestaurantController {
 
     @Autowired
     private RestaurantService restaurantService;
+    @Autowired
+    private UserRepository userRepository;
 
     @PostMapping("/add")
     public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
-        return restaurantService.saveRestaurant(restaurant);
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        String currentPrincipalName = authentication.getName();
+        System.out.println(currentPrincipalName);
+        Optional<User> userRes = userRepository.getUserByEmail(currentPrincipalName);
+
+        if(userRes.isEmpty())
+            throw new UsernameNotFoundException("Could not findUser with email = " + currentPrincipalName);
+        User user = userRes.get();
+        return restaurantService.saveRestaurant(restaurant, user.getId());
     }
 
     @GetMapping("/{id}")

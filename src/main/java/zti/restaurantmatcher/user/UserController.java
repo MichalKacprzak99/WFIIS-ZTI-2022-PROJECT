@@ -15,11 +15,6 @@ public class UserController {
     @Autowired
     private UserService userService;
 
-    @PostMapping("/add")
-    public User addUser(@RequestBody User user) {
-        return userService.saveUser(user);
-    }
-
     @GetMapping("/{id}")
     public User getUserById(@PathVariable String id) {
         Optional<User> userOpt = userService.getUserById(Long.parseLong(id));
@@ -35,7 +30,6 @@ public class UserController {
 
     @GetMapping
     public Collection<User> getAllUsers() {
-        System.out.println("Test");
         return userService.getAll();
     }
 
@@ -54,6 +48,11 @@ public class UserController {
     public String deleteAllUsers() {
         userService.deleteAllUsers();
         return "All Users deleted successfully";
+    }
+
+    @GetMapping("/{id}/friends/")
+    public Collection<User> getUserFriendships(@PathVariable String id) {
+        return userService.getUserFriendships(Long.parseLong(id));
     }
 
 }

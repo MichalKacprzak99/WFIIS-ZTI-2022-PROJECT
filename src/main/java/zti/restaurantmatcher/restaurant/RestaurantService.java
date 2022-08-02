@@ -18,8 +18,10 @@ public class RestaurantService {
         return restaurantRepository.getAllRestaurants();
     }
 
-    public Restaurant saveRestaurant(Restaurant restaurant) {
-        return restaurantRepository.save(restaurant);
+    public Restaurant saveRestaurant(Restaurant restaurant, Long ownerId) {
+        Restaurant createdRestaurant = restaurantRepository.save(restaurant);
+        restaurantRepository.setRestaurantOwner(createdRestaurant.getId(), ownerId);
+        return createdRestaurant;
     }
 
     public Optional<Restaurant> getRestaurantById(Long id) {
