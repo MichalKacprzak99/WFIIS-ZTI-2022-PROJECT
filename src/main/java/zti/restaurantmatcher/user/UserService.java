@@ -1,6 +1,7 @@
 package zti.restaurantmatcher.user;
 
 
+import java.util.Collection;
 import java.util.List;
 import java.util.Optional;
 
@@ -16,10 +17,6 @@ public class UserService {
 
     public List<User> getAll() {
         return userRepository.getAllUsers();
-    }
-
-    public User saveUser(User user) {
-        return userRepository.save(user);
     }
 
     public Optional<User> getUserById(Long id) {
@@ -40,6 +37,10 @@ public class UserService {
 
     public Long getCountOfUsers() {
         return userRepository.count();
+    }
+
+    public Collection<User> getUserFriendships(Long id) {
+        return userRepository.getUserFriendships(id);
     }
 
 }
