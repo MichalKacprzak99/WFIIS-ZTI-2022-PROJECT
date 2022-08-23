@@ -40,4 +40,8 @@ public class RestaurantService {
         return restaurantRepository.count();
     }
 
+    public void rateRestaurant(Long restaurantId, Integer rating) {
+        restaurantRepository.rateRestaurant(restaurantId, rating);
+    }
+
 }
