@@ -24,16 +24,16 @@ public class RestaurantService {
         return createdRestaurant;
     }
 
+    public Restaurant updateRestaurant(Restaurant restaurant) {
+        return restaurantRepository.save(restaurant);
+    }
+
     public Optional<Restaurant> getRestaurantById(Long id) {
         return restaurantRepository.findById(id);
     }
 
     public void deleteRestaurant(Long id) {
         restaurantRepository.deleteById(id);
-    }
-
-    public void deleteAllRestaurants() {
-        restaurantRepository.deleteAll();
     }
 
     public Long getCountOfRestaurants() {

@@ -1,10 +1,12 @@
 package zti.restaurantmatcher.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
+import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.security.core.userdetails.UsernameNotFoundException;
 import org.springframework.web.bind.annotation.*;
+import org.springframework.web.server.ResponseStatusException;
 import zti.restaurantmatcher.friendship.FriendshipRepository;
 import zti.restaurantmatcher.user.User;
 import zti.restaurantmatcher.user.UserRepository;
@@ -24,11 +26,26 @@ public class RestaurantController {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
-    @PostMapping("/add")
+    @PutMapping("/")
+    public Restaurant updateRestaurant(@RequestBody Restaurant restaurant) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.getAuthorities().toString().contains("RESTAURATOR")){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+        return restaurantService.updateRestaurant(restaurant);
+    }
+
+    @PostMapping("/")
     public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+
+        if (!authentication.getAuthorities().toString().contains("RESTAURATOR")){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         String currentPrincipalName = authentication.getName();
-        System.out.println(currentPrincipalName);
+
         Optional<User> userRes = userRepository.getUserByEmail(currentPrincipalName);
 
         if(userRes.isEmpty())
@@ -47,9 +64,7 @@ public class RestaurantController {
     }
 
     @GetMapping
-    public Collection<Restaurant> getAllRestaurants() {
-        return restaurantService.getAll();
-    }
+    public Collection<Restaurant> getAllRestaurants() {return restaurantService.getAll();}
 
     @GetMapping("/count")
     public Long getCountOfRestaurants() {
@@ -58,14 +73,13 @@ public class RestaurantController {
 
     @DeleteMapping("/{id}")
     public String deleteRestaurantById(@PathVariable String id) {
+        Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
+        if (!authentication.getAuthorities().toString().contains("RESTAURATOR")){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         restaurantService.deleteRestaurant(Long.parseLong(id));
         return "Restaurant deleted successfully";
-    }
-
-    @DeleteMapping
-    public String deleteAllRestaurants() {
-        restaurantService.deleteAllRestaurants();
-        return "All Restaurants deleted successfully";
     }
 
     @PostMapping("/{id}/rate")
@@ -91,7 +105,6 @@ public class RestaurantController {
         friendsWeight = friendsWeight1;
         List<Restaurant> restaurants = restaurantService.getAll();
         restaurants.sort(Comparator.comparingDouble((Restaurant r) -> r.getCompareValue(friendsWeight)).reversed());
-        System.out.println(restaurants);
         return restaurants;
     }
 }
