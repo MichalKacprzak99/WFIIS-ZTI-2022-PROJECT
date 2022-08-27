@@ -44,12 +44,6 @@ public class UserController {
         return "User deleted successfully";
     }
 
-    @DeleteMapping
-    public String deleteAllUsers() {
-        userService.deleteAllUsers();
-        return "All Users deleted successfully";
-    }
-
     @GetMapping("/{id}/friends/")
     public Collection<User> getUserFriendships(@PathVariable String id) {
         return userService.getUserFriendships(Long.parseLong(id));
