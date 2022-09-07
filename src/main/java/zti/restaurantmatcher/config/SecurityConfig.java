@@ -43,7 +43,9 @@ public class SecurityConfig {
             @Override
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
-                        .allowedMethods("*").allowedOrigins("https://zti-restaurant-matcher.herokuapp.com");
+                        .allowedMethods("*")
+                        .allowedOrigins("https://michalkacprzak99.github.io/WFIIS-ZTI-2022-PROJECT-FRONTEND/")
+                        .allowedOrigins("http://localhost:3000");
             }
         };
     }
