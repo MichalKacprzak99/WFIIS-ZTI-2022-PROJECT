@@ -3,6 +3,7 @@ package zti.restaurantmatcher.restaurant;
 
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.stereotype.Service;
+import zti.restaurantmatcher.user.User;
 
 import java.util.List;
 import java.util.Optional;
@@ -20,9 +21,14 @@ public class RestaurantService {
 
     public Restaurant saveRestaurant(Restaurant restaurant, Long ownerId) {
         Restaurant createdRestaurant = restaurantRepository.save(restaurant);
+
         restaurantRepository.setRestaurantOwner(createdRestaurant.getId(), ownerId);
         return createdRestaurant;
     }
+    public User getRestaurantOwner(Long restaurantId){
+        return restaurantRepository.getRestaurantOwner(restaurantId);
+    }
+
 
     public Restaurant updateRestaurant(Restaurant restaurant) {
         return restaurantRepository.save(restaurant);

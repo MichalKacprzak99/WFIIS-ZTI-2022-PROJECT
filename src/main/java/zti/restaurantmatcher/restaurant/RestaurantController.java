@@ -78,13 +78,25 @@ public class RestaurantController {
             throw new ResponseStatusException(HttpStatus.FORBIDDEN);
         }
 
+        String currentPrincipalName = authentication.getName();
+
+        Optional<User> userRes = userRepository.getUserByEmail(currentPrincipalName);
+
+        if(userRes.isEmpty())
+            throw new UsernameNotFoundException("Could not findUser with email = " + currentPrincipalName);
+        User user = userRes.get();
+        User restauratorOwner = restaurantService.getRestaurantOwner(Long.valueOf(id));
+        if(!Objects.equals(user.getId(), restauratorOwner.getId())){
+            throw new ResponseStatusException(HttpStatus.FORBIDDEN);
+        }
+
         restaurantService.deleteRestaurant(Long.parseLong(id));
         return "Restaurant deleted successfully";
     }
 
     @PostMapping("/{id}/rate")
-    public void rateRestaurant(@PathVariable String id, @RequestBody String rating){
-        restaurantService.rateRestaurant(Long.parseLong(id), Integer.parseInt(rating));
+    public void rateRestaurant(@PathVariable String id, @RequestBody Map<String, String> rateData){
+        restaurantService.rateRestaurant(Long.parseLong(id), Integer.parseInt(rateData.get("rating")));
     }
     @PostMapping("/match")
     public Collection<Restaurant> matchRestaurant(@RequestBody Map<String, String> userData){
