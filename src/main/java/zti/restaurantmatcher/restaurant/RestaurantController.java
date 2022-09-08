@@ -1,5 +1,6 @@
 package zti.restaurantmatcher.restaurant;
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.core.Authentication;
@@ -26,6 +27,8 @@ public class RestaurantController {
     @Autowired
     private FriendshipRepository friendshipRepository;
 
+
+    @Operation(summary = "Update restaurant by id")
     @PutMapping("/")
     public Restaurant updateRestaurant(@RequestBody Restaurant restaurant) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -36,6 +39,8 @@ public class RestaurantController {
         return restaurantService.updateRestaurant(restaurant);
     }
 
+
+    @Operation(summary = "Add new restaurant to database")
     @PostMapping("/")
     public Restaurant addRestaurant(@RequestBody Restaurant restaurant) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -54,6 +59,7 @@ public class RestaurantController {
         return restaurantService.saveRestaurant(restaurant, user.getId());
     }
 
+    @Operation(summary = "Get restaurant by id")
     @GetMapping("/{id}")
     public Restaurant getRestaurantById(@PathVariable String id) {
         Optional<Restaurant> restaurantOpt = restaurantService.getRestaurantById(Long.parseLong(id));
@@ -63,14 +69,12 @@ public class RestaurantController {
         throw new NoSuchElementException("No restaurant found with given id.");
     }
 
+    @Operation(summary = "Get all restaurants")
     @GetMapping
     public Collection<Restaurant> getAllRestaurants() {return restaurantService.getAll();}
 
-    @GetMapping("/count")
-    public Long getCountOfRestaurants() {
-        return restaurantService.getCountOfRestaurants();
-    }
 
+    @Operation(summary = "Delete restaurant with given id")
     @DeleteMapping("/{id}")
     public String deleteRestaurantById(@PathVariable String id) {
         Authentication authentication = SecurityContextHolder.getContext().getAuthentication();
@@ -94,10 +98,12 @@ public class RestaurantController {
         return "Restaurant deleted successfully";
     }
 
+    @Operation(summary = "Rate restaurant given by id")
     @PostMapping("/{id}/rate")
     public void rateRestaurant(@PathVariable String id, @RequestBody Map<String, String> rateData){
         restaurantService.rateRestaurant(Long.parseLong(id), Integer.parseInt(rateData.get("rating")));
     }
+    @Operation(summary = "Get a list of recommended restaurants in order from most to least recommended")
     @PostMapping("/match")
     public Collection<Restaurant> matchRestaurant(@RequestBody Map<String, String> userData){
 

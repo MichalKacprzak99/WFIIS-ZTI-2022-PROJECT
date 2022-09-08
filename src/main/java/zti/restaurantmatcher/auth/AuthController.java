@@ -1,6 +1,7 @@
 package zti.restaurantmatcher.auth;
 
 
+import io.swagger.v3.oas.annotations.Operation;
 import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.http.HttpStatus;
 import org.springframework.security.authentication.AuthenticationManager;
@@ -30,6 +31,7 @@ public class AuthController {
     @Autowired private AuthenticationManager authManager;
     @Autowired private PasswordEncoder passwordEncoder;
 
+    @Operation(summary = "Add new user to database")
     @PostMapping("/register")
     public Map<String, Object> registerHandler(@RequestBody User user){
         String encodedPass = passwordEncoder.encode(user.getPassword());
@@ -39,6 +41,7 @@ public class AuthController {
         return Collections.singletonMap("jwt-token", token);
     }
 
+    @Operation(summary = "Login and retrieve new authentication token")
     @PostMapping("/login")
     public Map<String, Object> loginHandler(@RequestBody AuthCredentials body){
         String email = body.getEmail();
