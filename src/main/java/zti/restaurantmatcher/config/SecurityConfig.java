@@ -44,8 +44,7 @@ public class SecurityConfig {
             public void addCorsMappings(CorsRegistry registry) {
                 registry.addMapping("/**")
                         .allowedMethods("*")
-                        .allowedOrigins("https://michalkacprzak99.github.io/WFIIS-ZTI-2022-PROJECT-FRONTEND/")
-                        .allowedOrigins("http://localhost:3000");
+                        .allowedOrigins("https://michalkacprzak99.github.io");
             }
         };
     }
