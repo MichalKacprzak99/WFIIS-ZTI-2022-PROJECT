@@ -31,14 +31,6 @@ public class UserService {
         userRepository.deleteById(id);
     }
 
-    public void deleteAllUsers() {
-        userRepository.deleteAll();
-    }
-
-    public Long getCountOfUsers() {
-        return userRepository.count();
-    }
-
     public Collection<User> getUserFriendships(Long id) {
         return userRepository.getUserFriendships(id);
     }
